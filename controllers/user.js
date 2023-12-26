@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from '../models/user.js';
 import { validate } from '../utils/validate.js';
+import { createJWT } from '../utils/jwt.js';
 
 const signUp = async (req, res) => {
   let data = req?.body;
@@ -15,7 +16,6 @@ const signUp = async (req, res) => {
           }
         ]
       });
-      console.log('userExist :>> ', userExist);
       if (userExist?.length) {
         return res.status(400).json({
           error: true,
@@ -31,6 +31,7 @@ const signUp = async (req, res) => {
         const storedUser = createdUser.toObject();
         delete storedUser.role;
         delete storedUser.password;
+        delete storedUser.__v;
         return res.status(200).json({
           message: 'User created successfully',
           data: storedUser
@@ -60,6 +61,52 @@ const signUp = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  const data = req?.body;
+  if (!data?.email || !data?.password) {
+    return res.status(400).json({
+      error: true,
+      message: 'Data is missing. Unable to log in',
+      data: null
+    });
+  }
+  try {
+    const user = await User.findOne({ email: data?.email }).exec();
+    if (user) {
+      const pwd = bcrypt.compareSync(data.password, user.password);
+      if (!pwd) {
+        return res.status(400).json({
+          error: true,
+          message: 'Incorrect password.',
+          data: null
+        });
+      }
+      const loggedUser = user.toObject();
+      delete loggedUser.password;
+      delete loggedUser.role;
+      delete loggedUser.__v;
+      const token = createJWT(user);
+      return res.status(200).json({
+        message: 'Login successfully',
+        data: { user: loggedUser, token }
+      });
+    }
+
+    return res.status(400).json({
+      error: true,
+      message: 'User not exists.',
+      data: null
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: 'Unable to log in. Try it later',
+      data: null
+    });
+  }
+};
+
 export default {
-  signUp
+  signUp,
+  login
 };
