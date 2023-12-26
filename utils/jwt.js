@@ -1,7 +1,7 @@
 import jwt from 'jwt-simple';
 import moment from 'moment';
 
-const jwtSecretKey = 'SECRET_KEY';
+export const jwtSecretKey = 'SECRET_KEY';
 
 export const createJWT = (user) => {
   const payload = {
