@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+import { connect } from 'mongoose';
+import 'dotenv/config';
 
 const connection = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE);
+    await connect(process.env.DATABASE);
     console.log('Connected succesfully to database');
   } catch (error) {
     console.error('Errot at connection', error);
@@ -11,6 +11,6 @@ const connection = async () => {
   }
 };
 
-module.exports = {
+export default {
   connection
 };

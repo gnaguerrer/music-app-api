@@ -1,8 +1,8 @@
-const express = require('express');
+import { Router } from 'express';
+import AlbumController from '../controllers/album.js';
 
-const router = express.Router();
-const AlbumController = require('../controllers/album');
+const router = Router();
 
 router.get('/', AlbumController.routeTest);
 
-module.exports = router;
+export default router;

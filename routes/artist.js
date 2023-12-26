@@ -1,8 +1,8 @@
-const express = require('express');
+import { Router } from 'express';
+import ArtistController from '../controllers/artist.js';
 
-const router = express.Router();
-const ArtistController = require('../controllers/artist');
+const router = Router();
 
 router.get('/', ArtistController.routeTest);
 
-module.exports = router;
+export default router;

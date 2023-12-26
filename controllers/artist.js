@@ -4,6 +4,6 @@ const routeTest = (req, res) => {
   });
 };
 
-module.exports = {
+export default {
   routeTest
 };
